@@ -14,7 +14,6 @@ int main(void)
     while (!WindowShouldClose())
     {
         UpdatePlayer(&player1);
-        UpdateDirection(&player1);
         BeginDrawing();
 
         ClearBackground(BLACK);
