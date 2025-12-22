@@ -103,49 +103,4 @@ void UpdateDirection(Player *player, float angle)
 
     player->plane.x = player->plane.x * cos(angle) - player->plane.y * sin(angle);
     player->plane.y = oldPlaneX * sin(angle) + player->plane.y * cos(angle);
-    /*
-    if (IsKeyDown(KEY_UP))
-    {
-        if (IsKeyDown(KEY_RIGHT))
-            player->direction = (Vector2){1, -1};
-        else if (IsKeyDown(KEY_LEFT))
-            player->direction = (Vector2){-1, -1};
-        else
-        {
-            player->direction = (Vector2){0, -1};
-        }
-    }
-    if (IsKeyDown(KEY_DOWN))
-    {
-        if (IsKeyDown(KEY_RIGHT))
-            player->direction = (Vector2){1, 1};
-        else if (IsKeyDown(KEY_LEFT))
-            player->direction = (Vector2){-1, 1};
-        else
-        {
-            player->direction = (Vector2){0, 1};
-        }
-    }
-    if (IsKeyDown(KEY_RIGHT))
-    {
-        if (IsKeyDown(KEY_UP))
-            player->direction = (Vector2){1, -1};
-        else if (IsKeyDown(KEY_DOWN))
-            player->direction = (Vector2){1, 1};
-        else
-        {
-            player->direction = (Vector2){1, 0};
-        }
-    }
-    if (IsKeyDown(KEY_LEFT))
-    {
-        if (IsKeyDown(KEY_UP))
-            player->direction = (Vector2){-1, -1};
-        else if (IsKeyDown(KEY_DOWN))
-            player->direction = (Vector2){-1, 1};
-        else
-        {
-            player->direction = (Vector2){-1, 0};
-        }
-    }*/
 }
