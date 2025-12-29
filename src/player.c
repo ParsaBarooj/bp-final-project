@@ -48,43 +48,33 @@ void UpdatePlayer(Player *player)
     // }
     if (IsKeyDown(KEY_W))
 {
-    // حرکت مورد نظر
     float desiredMoveX = player->direction.x * moveSpeed;
     float desiredMoveY = player->direction.y * moveSpeed;
     
-    // موقعیت جدید کامل
     Vector2 newPos = player->position;
     newPos.x += desiredMoveX;
     newPos.y += desiredMoveY;
     
-    // تبدیل به مختصات نقشه
     int mapX = (int)(newPos.x / 30);
     int mapY = (int)(newPos.y / 30);
     
-    // بررسی برخورد (بدون bool)
-    int canMoveFull = 1; // فرض کن می‌تونی حرکت کنی
+    int canMoveFull = 1; 
     
-    // اگر خارج از نقشه باشی
     if (mapX < 0 || mapX >= 20 || mapY < 0 || mapY >= 20)
     {
         canMoveFull = 0;
     }
-    // اگر روی دیوار باشی
     else if (map[mapY][mapX] > 0)
     {
         canMoveFull = 0;
     }
     
-    // اگر می‌تونی کامل حرکت کنی
     if (canMoveFull == 1)
     {
         player->position = newPos;
     }
     else
     {
-        // اگر نه، سعی کن فقط در یک محور حرکت کنی
-        
-        // اول: فقط در X حرکت کن
         Vector2 tryX = player->position;
         tryX.x += desiredMoveX;
         
@@ -107,7 +97,6 @@ void UpdatePlayer(Player *player)
             player->position.x = tryX.x;
         }
         
-        // دوم: فقط در Y حرکت کن
         Vector2 tryY = player->position;
         tryY.y += desiredMoveY;
         
