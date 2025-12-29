@@ -26,41 +26,117 @@ void DrawPlayer(Player *player)
     DrawCircleV(player->position, 2, WHITE);
 }
 
+
 void UpdatePlayer(Player *player)
 {
+    extern int map[20][20];
     float delta = GetFrameTime();
+    float moveSpeed = player->speed * delta * 60;
+    // if (IsKeyDown(KEY_W))
+    // {
+    //     Vector2 newPos = player->position;
+    //     newPos.x += player->direction.x * moveSpeed;
+    //     newPos.y += player->direction.y * moveSpeed;
+
+    //     int mapX = (int)(newPos.x / 30);
+    //     int mapY = (int)(newPos.y / 30);
+
+    //     if (!IsWall(mapX, mapY))
+    //     {
+    //         player->position = newPos;
+    //     }
+    // }
     if (IsKeyDown(KEY_W))
+{
+    // حرکت مورد نظر
+    float desiredMoveX = player->direction.x * moveSpeed;
+    float desiredMoveY = player->direction.y * moveSpeed;
+    
+    // موقعیت جدید کامل
+    Vector2 newPos = player->position;
+    newPos.x += desiredMoveX;
+    newPos.y += desiredMoveY;
+    
+    // تبدیل به مختصات نقشه
+    int mapX = (int)(newPos.x / 30);
+    int mapY = (int)(newPos.y / 30);
+    
+    // بررسی برخورد (بدون bool)
+    int canMoveFull = 1; // فرض کن می‌تونی حرکت کنی
+    
+    // اگر خارج از نقشه باشی
+    if (mapX < 0 || mapX >= 20 || mapY < 0 || mapY >= 20)
     {
-        Vector2 newPos = player->position;
-        newPos.y -= player->speed * delta * 60;
-
-        int mapX = (int)(newPos.x / 30);
-        int mapY = (int)((newPos.y) / 30);
-
-        if (!IsWall(mapX, mapY))
+        canMoveFull = 0;
+    }
+    // اگر روی دیوار باشی
+    else if (map[mapY][mapX] > 0)
+    {
+        canMoveFull = 0;
+    }
+    
+    // اگر می‌تونی کامل حرکت کنی
+    if (canMoveFull == 1)
+    {
+        player->position = newPos;
+    }
+    else
+    {
+        // اگر نه، سعی کن فقط در یک محور حرکت کنی
+        
+        // اول: فقط در X حرکت کن
+        Vector2 tryX = player->position;
+        tryX.x += desiredMoveX;
+        
+        int mapX_x = (int)(tryX.x / 30);
+        int mapY_x = (int)(tryX.y / 30);
+        
+        int canMoveX = 1;
+        
+        if (mapX_x < 0 || mapX_x >= 20 || mapY_x < 0 || mapY_x >= 20)
         {
-            player->position = newPos;
+            canMoveX = 0;
+        }
+        else if (map[mapY_x][mapX_x] > 0)
+        {
+            canMoveX = 0;
+        }
+        
+        if (canMoveX == 1)
+        {
+            player->position.x = tryX.x;
+        }
+        
+        // دوم: فقط در Y حرکت کن
+        Vector2 tryY = player->position;
+        tryY.y += desiredMoveY;
+        
+        int mapX_y = (int)(tryY.x / 30);
+        int mapY_y = (int)(tryY.y / 30);
+        
+        int canMoveY = 1;
+        
+        if (mapX_y < 0 || mapX_y >= 20 || mapY_y < 0 || mapY_y >= 20)
+        {
+            canMoveY = 0;
+        }
+        else if (map[mapY_y][mapX_y] > 0)
+        {
+            canMoveY = 0;
+        }
+        
+        if (canMoveY == 1)
+        {
+            player->position.y = tryY.y;
         }
     }
+}
 
     if (IsKeyDown(KEY_S))
     {
         Vector2 newPos = player->position;
-        newPos.y += player->speed * delta * 60;
-
-        int mapX = (int)(newPos.x / 30);
-        int mapY = (int)((newPos.y) / 30);
-
-        if (!IsWall(mapX, mapY))
-        {
-            player->position = newPos;
-        }
-    }
-
-    if (IsKeyDown(KEY_A))
-    {
-        Vector2 newPos = player->position;
-        newPos.x -= player->speed * delta * 60;
+        newPos.x -= player->direction.x * moveSpeed;
+        newPos.y -= player->direction.y * moveSpeed;
 
         int mapX = (int)(newPos.x / 30);
         int mapY = (int)((newPos.y) / 30);
@@ -73,11 +149,31 @@ void UpdatePlayer(Player *player)
 
     if (IsKeyDown(KEY_D))
     {
+        Vector2 leftDir = {-player->direction.y, player->direction.x};
+
         Vector2 newPos = player->position;
-        newPos.x += player->speed * delta * 60;
+        newPos.x += leftDir.x * moveSpeed;
+        newPos.y += leftDir.y * moveSpeed;
 
         int mapX = (int)(newPos.x / 30);
-        int mapY = (int)((newPos.y) / 30);
+        int mapY = (int)(newPos.y / 30);
+
+        if (!IsWall(mapX, mapY))
+        {
+            player->position = newPos;
+        }
+    }
+
+    if (IsKeyDown(KEY_A))
+    {
+        Vector2 rightDir = {player->direction.y, -player->direction.x};
+
+        Vector2 newPos = player->position;
+        newPos.x += rightDir.x * moveSpeed;
+        newPos.y += rightDir.y * moveSpeed;
+
+        int mapX = (int)(newPos.x / 30);
+        int mapY = (int)(newPos.y / 30);
 
         if (!IsWall(mapX, mapY))
         {
@@ -85,11 +181,13 @@ void UpdatePlayer(Player *player)
         }
     }
     float actualRotSpeed = player->rotSpeed * delta * 60.0f;
-    
-    if (IsKeyDown(KEY_LEFT)) {
-        UpdateDirection(player, actualRotSpeed); 
+
+    if (IsKeyDown(KEY_RIGHT))
+    {
+        UpdateDirection(player, actualRotSpeed);
     }
-    if (IsKeyDown(KEY_RIGHT)) {
+    if (IsKeyDown(KEY_LEFT))
+    {
         UpdateDirection(player, -actualRotSpeed);
     }
 }

@@ -13,7 +13,7 @@ int main(void)
 {
     InitWindow(600, 600, "game project");
 
-    ViewModes currentView = VIEW_2D;
+    ViewModes currentView = VIEW_3D;
 
     SetTargetFPS(60);
 
@@ -38,13 +38,12 @@ int main(void)
             
             DrawPlayer(&player1);
             
-            EndDrawing();
         }
         else
         {
             Render3DView(&player1);
         }
-        DrawText("کلید M فشرده شد!", 300, 300, 30, RED);
+        EndDrawing();
     }
 
     CloseWindow();
